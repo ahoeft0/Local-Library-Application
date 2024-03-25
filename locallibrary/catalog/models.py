@@ -133,3 +133,9 @@ class Author(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
+    
+    def book_set(self):
+        return Book.objects.filter(first_name__contains = self.first_name, 
+                                   last_name__contains = self.last_name, 
+                                   date_of_birth__contains = self.date_of_birth, 
+                                   date_of_death__contains = self.date_of_death)
