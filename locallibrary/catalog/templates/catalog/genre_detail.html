@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Genre: {{ genre.name }}</h1>
+
+  <!-- genre detail link not yet defined -->
+  <div style="margin-left:20px;margin-top:20px;height:fit-content">
+    <h4>Books</h4>
+
+    {% for book in genre.book_set.all %}
+    <p>
+      <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+      <br>{{book.summary}}
+    </p>  
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+
+  {% if perms.catalog.change_genre or perms.catalog.delete_genre %}
+  <hr>
+  <ul class="sidebar-nav">
+    {% if perms.catalog.change_genre %}
+      <li><a href="{% url 'genre-update' genre.id %}">Update genre</a></li>
+    {% endif %}
+    {% if not genre.book_set.all and perms.catalog.delete_genre %}
+      <li><a href="{% url 'genre-delete' genre.id %}">Delete genre</a></li>
+    {% endif %}
+    </ul>
+  {% endif %}
+
+{% endblock %}
+
