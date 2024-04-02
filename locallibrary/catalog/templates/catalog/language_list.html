@@ -1,11 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<h1>Books</h1>
-{% for book in page_obj.object_list %}
+<h1>Languages</h1>
+{% for language in page_obj.object_list %}
   <hr/>
-  <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
-  <text>({{book.author}}) </text> 
+  <a href="{{ language.get_absolute_url }}">{{ language.name }}</a> 
   {% endfor %}
  <hr/>
 <center>

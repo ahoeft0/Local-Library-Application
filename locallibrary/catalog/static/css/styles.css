@@ -1,0 +1,110 @@
+
+.sidebar-nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+#logout-form {
+    display: inline;
+}
+
+#logout-form button {
+    padding: 0;
+    margin: 0;
+}
+
+a, li {
+    font-size: x-large;
+}
+
+.mysidebar {
+    background-color: #595F72;
+    width: 30vw;
+    position: fixed;
+}
+
+div {
+    height: 100vh;
+}
+
+.mysidebar li, .mysidebar a, .mysidebar button {
+    color:white;
+    background-color: transparent;
+    border-color: transparent;
+    text-decoration: none;
+}
+
+.mysidebar a:hover, .mysidebar button:hover {
+    color:#BCD2EE;
+}
+
+.main {
+    margin-left: 30vw; /* Same as the width of the sidebar */
+    padding: 0px 10px;
+  }
+
+  .main a{
+    color: black;
+  }
+
+  .main{
+    display: grid;
+    place-items: center;
+    background-size: 100% 100%;
+    background-repeat: repeat;
+    background-position: top;
+    background-attachment: fixed;
+    background-position-x: 15vw;
+    height: fit-content;
+    min-height: 100%;
+  }
+
+  .inherit {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    border: solid;
+    padding: 10px;
+    width: 65vw;
+    height:fit-content;
+    border-radius: 5%;
+    background-color: #595F72;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
+
+  .inherit a, .inherit hr, .inherit text, .inherit p, .inherit li, .inherit h1, .inherit h2, .inherit h3, .inherit h4 {
+    color: white;
+  }
+  
+  .inherit a:hover {
+    color:#BCD2EE;
+  }
+
+  center a, center span {
+    font-size: 25px;
+    color: white;
+  }
+
+  .submitButton {
+    color: white;
+    background-color: #00C04B;
+    border-radius: 5px;
+    font-size: x-large;
+  }
+
+ form {
+  color:white;
+  font-size: large;
+ }
+
+form table {
+  border-collapse: separate;
+  border-spacing: 0 15px;
+}
+
+ form td {
+  padding: 0 50px;
+ }
