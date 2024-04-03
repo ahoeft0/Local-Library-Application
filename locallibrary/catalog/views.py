@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from .models import Book, Author, BookInstance, Genre
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger 
 
 def index(request):
     """View function for home page of site."""
@@ -39,48 +40,80 @@ def index(request):
 
 from django.views import generic
 
-class BookListView(generic.ListView):
-    model = Book
-    paginate_by = 10
-
+def BookListView(request):
+    books = Book.objects.all()
+    p = Paginator(books, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/book_list.html', context)
 class BookDetailView(generic.DetailView):
     model = Book
 
-class AuthorListView(generic.ListView):
-    model = Author
-    paginate_by = 10
+def AuthorListView(request):
+    authors = Author.objects.all()
+    p = Paginator(authors, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/author_list.html', context)
 
 class AuthorDetailView(generic.DetailView):
     model = Author
     
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class LoanedBooksByUserListView(LoginRequiredMixin,generic.ListView):
+def LoanedBooksByUserListView(request):
     """Generic class-based view listing books on loan to current user."""
-    model = BookInstance
-    template_name = 'catalog/bookinstance_list_borrowed_user.html'
-    paginate_by = 10
-
-    def get_queryset(self):
-        return (
-            BookInstance.objects.filter(borrower=self.request.user)
-            .filter(status__exact='o')
-            .order_by('due_back')
-        )
+    books = BookInstance.objects.filter(borrower=request.user).filter(status__exact='o').order_by('due_back')
+    p = Paginator(books, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/bookinstance_list_borrowed_user.html', context)
     
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
-class AllBorrowedBooksView(PermissionRequiredMixin, generic.ListView):
+def AllBorrowedBooksView(request):
     permission_required = 'catalog.can_mark_returned'
-    model = BookInstance
-    template_name = 'catalog/bookinstance_list_all_borrowed_books.html'
-    paginate_by = 10
-
-    def get_queryset(self):
-        return (
-            BookInstance.objects.filter(status__exact='o')
-            .order_by('due_back')
-        )
+    books = BookInstance.objects.filter(status__exact='o').order_by('due_back')
+    p = Paginator(books, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/bookinstance_list_all_borrowed_books.html', context)
 
 
 import datetime
@@ -187,12 +220,30 @@ class BookDelete(PermissionRequiredMixin, DeleteView):
 #New Features
 from .models import Genre        
 
-class GenreListView(generic.ListView):
-    model = Genre
-    paginate_by = 10
+def GenreListView(request):
+    genres = Genre.objects.all()
+    p = Paginator(genres, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/genre_list.html', context)
 
 class GenreDetailView(generic.DetailView):
     model = Genre
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        genre = self.get_object
+        context['books'] = Book.objects.filter(genre=self.object)
+        return context
     
 class GenreCreate(PermissionRequiredMixin, CreateView):
     model = Genre
@@ -221,12 +272,30 @@ class GenreDelete(PermissionRequiredMixin, DeleteView):
         
 from .models import Language        
 
-class LanguageListView(generic.ListView):
-    model = Language
-    paginate_by = 10
+def LanguageListView(request):
+    languages = Language.objects.all()
+    p = Paginator(languages, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/language_list.html', context)
 
 class LanguageDetailView(generic.DetailView):
     model = Language
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        language = self.get_object
+        context['books'] = Book.objects.filter(language=self.object)
+        return context
     
 class LanguageCreate(PermissionRequiredMixin, CreateView):
     model = Language
@@ -253,16 +322,27 @@ class LanguageDelete(PermissionRequiredMixin, DeleteView):
                 reverse("language-delete", kwargs={"pk": self.object.pk})
             )
         
-from .models import BookInstance        
+from .models import BookInstance
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger       
 
-class BookInstanceListView(generic.ListView):
-    model = BookInstance
-    paginate_by = 10
-    permission_required = 'catalog.add_bookinstance'
+def BookInstanceListView(request):
+    books = BookInstance.objects.all()
+    p = Paginator(books, 10)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = p.get_page(page_number)  # returns the desired page object
+    except PageNotAnInteger:
+        # if page_number is not an integer then assign the first page
+        page_obj = p.page(1)
+    except EmptyPage:
+        # if page is empty then return last page
+        page_obj = p.page(p.num_pages)
+    context = {'page_obj': page_obj}
+    # sending the page object to index.html
+    return render(request, 'catalog/bookinstance_list.html', context)
 
 class BookInstanceDetailView(generic.DetailView):
     model = BookInstance
-    permission_required = 'catalog.add_bookinstance'
     
 class BookInstanceCreate(PermissionRequiredMixin, CreateView):
     model = BookInstance
